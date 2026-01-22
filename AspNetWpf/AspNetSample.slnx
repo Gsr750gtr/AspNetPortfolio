@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="AspNetSample/AspNetSample.csproj" />
+  <Project Path="SharedDTOs/SharedDTOs.csproj" Id="5ce9353a-f617-4b64-ae3e-f44b2b45b484" />
+  <Project Path="WpfSample/CustomerManager/CustomerManager.csproj" Id="016f6125-6f23-4486-a00b-373b49446f09" />
+</Solution>

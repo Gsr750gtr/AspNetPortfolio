@@ -1,0 +1,93 @@
+# Visual Studio
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Build results
+[Bb]in/
+[Oo]bj/
+Debug/
+Release/
+x64/
+x86/
+build/
+
+# Rider
+.idea/
+
+# ASP.NET / .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+
+# NuGet
+*.nupkg
+*.snupkg
+packages/
+# Uncomment if using PackageReference
+# obj/
+
+# Resharper
+_ReSharper*/
+*.DotSettings.user
+
+# DotCover
+*.dotCover
+
+# Others
+*.log
+*.tlog
+*.vspscc
+*_i.c
+*_p.c
+*_h.h
+*.ilk
+*.meta
+*.obj
+*.pch
+*.pdb
+*.ipch
+*.aps
+*.ncb
+*.sbr
+*.scc
+*.class
+*.dll
+*.exe
+*.cache
+*.manifest
+*.resources
+*.resx
+*.o
+*.lo
+*.la
+*.lai
+*.so
+*.a
+*.lib
+*.exp
+*.idb
+*.pdb
+*.ipdb
+*.pgc
+*.pgd
+*.rsp
+*.sbr
+*.tlb
+*.tlh
+*.tmp
+*.bak
+*.orig
+*.swp
+
+# Android Studio
+/app/release/
+
+# Keystore (signing)
+*.jks
+*.keystore
+
+# VS Code
+.vscode/
