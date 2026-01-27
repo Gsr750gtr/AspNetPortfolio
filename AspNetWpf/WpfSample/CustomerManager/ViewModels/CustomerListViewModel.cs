@@ -1,16 +1,19 @@
 ﻿using CustomerManager.Models;
 using Prism.Commands;
 using Prism.Mvvm;
+using Prism.Services.Dialogs;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace CustomerManager.ViewModels
 {
     public class CustomerListViewModel : BindableBase
     {
         public DelegateCommand RefreshCommand { get; }
+        public DelegateCommand InsertCommand { get; }
         public DelegateCommand<CustomerInfo> DeleteCommand { get; }
 
         private IEnumerable<CustomerInfo> _customerInfos;
@@ -31,26 +34,38 @@ namespace CustomerManager.ViewModels
             }
         }
 
-        private bool _canRefresh = true;
-        public bool CanRefresh
+        private bool _isActive = true;
+        public bool IsActive
         {
-            get => _canRefresh;
-            set => SetProperty(ref _canRefresh, value);
+            get => _isActive;
+            set => SetProperty(ref _isActive, value);
         }
 
-        private readonly CustomerService _service;
+        private readonly CustomerService _customerService;
+        private readonly IDialogService _dialogService;
 
-        public CustomerListViewModel()
+        public CustomerListViewModel(CustomerService customerService, IDialogService dialogService)
         {
-            RefreshCommand = new DelegateCommand(OnRefresh).ObservesCanExecute(() => CanRefresh);
-            DeleteCommand = new DelegateCommand<CustomerInfo>((customerInfo => OnDelete(customerInfo)));
+            RefreshCommand = new DelegateCommand(OnRefresh).ObservesCanExecute(() => IsActive);
+            InsertCommand = new DelegateCommand(OnInsert).ObservesCanExecute(() => IsActive);
+            DeleteCommand = new DelegateCommand<CustomerInfo>((customerInfo => OnDeleteAsync(customerInfo))).ObservesCanExecute(() => IsActive);
 
-            _service = new CustomerService();
+            _customerService = customerService;
+            _dialogService = dialogService;
         }
 
-        private void OnDelete(CustomerInfo customerInfo)
+        private void OnInsert()
         {
-            // TODO:選択行DB削除処理
+            _dialogService.ShowDialog(
+                nameof(Views.InputCustomerView),
+                null,
+                result =>
+                {
+                    if (result.Result == ButtonResult.OK)
+                    {
+                        LoadCustomers();
+                    }
+                });
         }
 
         private void OnRefresh()
@@ -58,12 +73,29 @@ namespace CustomerManager.ViewModels
             LoadCustomers();
         }
 
-        private async void LoadCustomers()
+        private async void OnDeleteAsync(CustomerInfo customerInfo)
         {
-            CanRefresh = false;
+            IsActive = false;
             try
             {
-                var datas = await _service.GetCustomersAsync();
+                await _customerService.DeleteAsync(customerInfo.Code);
+            }
+            catch (System.Exception e)
+            {
+                Debug.WriteLine($"Error LoadCustomers: {e.Message}");
+            }
+            IsActive = true;
+
+            // DB再読み込み
+            LoadCustomers();
+        }
+
+        private async void LoadCustomers()
+        {
+            IsActive = false;
+            try
+            {
+                var datas = await _customerService.GetAsync();
                 CustomerInfos = datas.Select(x => new CustomerInfo(x.Code, x.Name, x.NameKana, x.Prefecture));
             }
             catch (System.Exception e)
@@ -71,7 +103,7 @@ namespace CustomerManager.ViewModels
                 Debug.WriteLine($"Error LoadCustomers: {e.Message}");
             }
 
-            CanRefresh = true;
+            IsActive = true;
         }
 
         private void FilterCustomers()

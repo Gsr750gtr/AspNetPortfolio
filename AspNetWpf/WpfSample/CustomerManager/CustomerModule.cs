@@ -29,6 +29,7 @@ namespace CustomerManager
         {
             // DI に View を登録
             containerRegistry.RegisterForNavigation<CustomerListView>();
+            containerRegistry.RegisterDialog<InputCustomerView>();
 
             // HttpClientをシングルトンに
             containerRegistry.RegisterSingleton<CustomerService>();

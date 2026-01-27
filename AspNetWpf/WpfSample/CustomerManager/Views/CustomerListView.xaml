@@ -14,6 +14,12 @@
                         <TextBlock Text="更新"/>
                     </StackPanel>
                 </Button>
+                <Button Command="{Binding InsertCommand}" Margin="10,0,0,0">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Add"/>
+                        <TextBlock Text="追加"/>
+                    </StackPanel>
+                </Button>
             </ToolBar>
             <ToolBar Band="1">
                 <DockPanel>
@@ -30,11 +36,13 @@
                 <DataGridTextColumn Header="取引先名" Binding="{Binding Name}" />
                 <DataGridTextColumn Header="名称カナ" Binding="{Binding NameKana}" />
                 <DataGridTextColumn Header="都道府県" Binding="{Binding Prefecture}" />
-                <DataGridTemplateColumn Header="操作">
+                <DataGridTemplateColumn Header="削除">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <Button Content="削除" Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
-                                    CommandParameter="{Binding}" />
+                            <Button Command="{Binding DataContext.DeleteCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}"
+                                    CommandParameter="{Binding}" Background="PaleVioletRed">
+                                <materialDesign:PackIcon Kind="Delete"/>
+                            </Button>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetSample.Repository;
+using Microsoft.AspNetCore.Mvc;
 using SharedDTOs.Models;
 
 namespace AspNetSample.Controllers
@@ -7,20 +8,32 @@ namespace AspNetSample.Controllers
     [ApiController]
     public class CustomersController : ControllerBase
     {
-        private static readonly List<CustomerDto> mockData = new()
+        private readonly CustomerRepository _repository;
+
+        public CustomersController(CustomerRepository repository)
         {
-            new CustomerDto("001", "取引先01", "トリヒキサキ01", "東京都"),
-            new CustomerDto("002", "取引先02", "トリヒキサキ02", "大阪府"),
-        };
+            _repository = repository;
+        }
 
         [HttpGet]
-        public IEnumerable<CustomerDto> Get() => mockData;
+        public async Task<ActionResult<IEnumerable<CustomerDto>>> Get()
+        {
+            var customers = await _repository.GetAsync();
+            return Ok(customers);
+        }
 
         [HttpPost]
-        public IActionResult Post(CustomerDto dto)
+        public async Task<IActionResult> Insert([FromBody] CustomerDto customerDto)
         {
-            mockData.Add(dto);
-            return CreatedAtAction(nameof(Get), new { code = dto.Code }, dto);
+            await _repository.InsertAsync(customerDto);
+            return Ok(customerDto);
+        }
+
+        [HttpDelete("{customerCode}")]
+        public async Task<IActionResult> Delete(string customerCode)
+        {
+            var result = await _repository.DeleteAsync(customerCode);
+            return Ok(result);
         }
     }
 }
