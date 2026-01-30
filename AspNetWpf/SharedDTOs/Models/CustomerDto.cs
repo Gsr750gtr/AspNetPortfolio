@@ -2,6 +2,7 @@
 
 namespace SharedDTOs.Models
 {
+    // FromBody ではコンストラクタ必須の DTO をバインドできずエラーになるため、プロパティ形式に変更
     public record CustomerDto()
     {
         [Required]

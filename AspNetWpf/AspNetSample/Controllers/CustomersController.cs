@@ -1,6 +1,7 @@
 ﻿using AspNetSample.Repository;
 using Microsoft.AspNetCore.Mvc;
 using SharedDTOs.Models;
+using System.Threading.Tasks;
 
 namespace AspNetSample.Controllers
 {
@@ -20,6 +21,19 @@ namespace AspNetSample.Controllers
         {
             var customers = await _repository.GetAsync();
             return Ok(customers);
+        }
+
+        [HttpGet("{code}")]
+        public async Task<ActionResult<CustomerDto>> GetByCode(string code)
+        {
+            var customer = await _repository.GetByCodeAsync(code);
+
+            if(customer is null)
+            {
+                return NotFound();
+            }
+
+            return Ok(customer);
         }
 
         [HttpPost]
