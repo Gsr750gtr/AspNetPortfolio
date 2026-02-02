@@ -13,8 +13,7 @@
 ![WPF 取引先一覧](Screenshots/CustomerListView.jpg)
 
 ### Android クライアント
-![Android 取引先情報取得](screenshots/AndroidShowCustomer.jpg)
-
+![Android 取引先情報取得](Screenshots/AndroidShowCustomer.jpg)
 
 ## 使用技術
 - ASP.NET Core Web API
