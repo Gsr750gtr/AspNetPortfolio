@@ -1,11 +1,20 @@
 # AspNetPortfolio
 
 ## 概要
-このプロジェクトはAPS.NETのサンプルです。
-バックエンドアプリ（ASP.NET）
-デスクトップアプリ（C#／WPF／MVVM）
-モバイルアプリ（Android／Kotlin／Jetpack Compose）
+このプロジェクトはAPS.NETのサンプルです。  
+バックエンドアプリ（ASP.NET）  
+デスクトップアプリ（C#／WPF／MVVM）  
+モバイルアプリ（Android／Kotlin／Jetpack Compose）  
 バックエンド１つに対し、デスクトップとモバイルアプリの二つのUIからアクセスします。
+
+## スクリーンショット
+
+### WPF クライアント
+![WPF 取引先一覧](Screenshots/CustomerListView.jpg)
+
+### Android クライアント
+![Android 取引先情報取得](screenshots/AndroidShowCustomer.jpg)
+
 
 ## 使用技術
 - ASP.NET Core Web API
