@@ -43,11 +43,23 @@ namespace AspNetSample.Controllers
             return Ok(customerDto);
         }
 
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] CustomerDto customerDto)
+        {
+            var result = await _repository.UpdateAsync(customerDto);
+            if(result < 1)
+            {
+                return NotFound();
+            }
+
+            return NoContent();
+        }
+
         [HttpDelete("{customerCode}")]
         public async Task<IActionResult> Delete(string customerCode)
         {
-            var result = await _repository.DeleteAsync(customerCode);
-            return Ok(result);
+            await _repository.DeleteAsync(customerCode);
+            return NoContent();
         }
     }
 }

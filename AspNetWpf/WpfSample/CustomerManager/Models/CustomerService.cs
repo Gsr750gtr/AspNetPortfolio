@@ -31,6 +31,12 @@ namespace CustomerManager.Models
             response.EnsureSuccessStatusCode();
         }
 
+        public async Task UpdateAsync(CustomerDto customerDto)
+        {
+            var response = await _httpClient.PutAsJsonAsync("api/customers", customerDto);
+            response.EnsureSuccessStatusCode();
+        }
+
         public async Task DeleteAsync(string customerCode)
         {
             var response = await _httpClient.DeleteAsync($"api/customers/{customerCode}");

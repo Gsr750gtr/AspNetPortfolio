@@ -21,7 +21,7 @@
             
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="取引先コード"/>
-                <TextBox Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}" MaxLength="10"/>
+                <TextBox Text="{Binding Code, UpdateSourceTrigger=PropertyChanged}" MaxLength="10" IsEnabled="{Binding IsAdd}"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">

@@ -36,6 +36,13 @@ namespace AspNetSample.Repository
             await connection.ExecuteAsync(sql, customerDto);
         }
 
+        public async Task<int> UpdateAsync(CustomerDto customerDto)
+        {
+            using var connection = new SqlConnection(_connectionString);
+            var sql = " UPDATE  Customers set CustomerName = @Name, CustomerNameKana = @NameKana, Prefecture = @Prefecture where CustomerCode = @Code";
+            return await connection.ExecuteAsync(sql, customerDto);
+        }
+
         public async Task<int> DeleteAsync(string customerCode)
         {
             using var connection = new SqlConnection(_connectionString);

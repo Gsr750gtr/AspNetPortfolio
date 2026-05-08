@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace CustomerManager.ViewModels
 {
@@ -14,6 +15,7 @@ namespace CustomerManager.ViewModels
     {
         public DelegateCommand RefreshCommand { get; }
         public DelegateCommand InsertCommand { get; }
+        public DelegateCommand UpdateCommand { get; }
         public DelegateCommand<CustomerInfo> DeleteCommand { get; }
 
         private IEnumerable<CustomerInfo> _customerInfos;
@@ -41,6 +43,24 @@ namespace CustomerManager.ViewModels
             set => SetProperty(ref _isActive, value);
         }
 
+        private bool _canEdit = false;
+        public bool CanEdit
+        {
+            get => _canEdit;
+            set => SetProperty(ref _canEdit, value);
+        }
+
+        private CustomerInfo _currentItem = null;
+        public CustomerInfo CurrentItem
+        {
+            get => _currentItem;
+            set
+            {
+                SetProperty(ref _currentItem, value);
+                CanEdit = CurrentItem != null && IsActive;
+            }
+        }
+
         private readonly CustomerService _customerService;
         private readonly IDialogService _dialogService;
 
@@ -48,10 +68,13 @@ namespace CustomerManager.ViewModels
         {
             RefreshCommand = new DelegateCommand(OnRefresh).ObservesCanExecute(() => IsActive);
             InsertCommand = new DelegateCommand(OnInsert).ObservesCanExecute(() => IsActive);
+            UpdateCommand = new DelegateCommand(OnUpdateAsync).ObservesCanExecute(() => CanEdit);
             DeleteCommand = new DelegateCommand<CustomerInfo>((customerInfo => OnDeleteAsync(customerInfo))).ObservesCanExecute(() => IsActive);
 
             _customerService = customerService;
             _dialogService = dialogService;
+
+            LoadCustomers();
         }
 
         private void OnInsert()
@@ -73,12 +96,36 @@ namespace CustomerManager.ViewModels
             LoadCustomers();
         }
 
+        private void OnUpdateAsync()
+        {
+
+            var param = new DialogParameters
+            {
+                { "customerInfo", CurrentItem}
+            };
+            _dialogService.ShowDialog(
+                nameof(Views.InputCustomerView),
+                param,
+                result =>
+                {
+                    if (result.Result == ButtonResult.OK)
+                    {
+                        LoadCustomers();
+                    }
+                });
+        }
+
         private async void OnDeleteAsync(CustomerInfo customerInfo)
         {
             IsActive = false;
             try
             {
-                await _customerService.DeleteAsync(customerInfo.Code);
+                // 簡易確認ダイアログ
+                if (MessageBox.Show($"選択した取引先「{customerInfo.Code}」を削除しますか？", "削除確認", MessageBoxButton.OKCancel)
+                    == MessageBoxResult.OK)
+                {
+                    await _customerService.DeleteAsync(customerInfo.Code);
+                }
             }
             catch (System.Exception e)
             {

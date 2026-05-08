@@ -4,10 +4,10 @@ using Prism.Mvvm;
 using Prism.Services.Dialogs;
 using SharedDTOs.Models;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
+using System.Net;
+using System.Net.Http;
+using System.Windows;
 
 namespace CustomerManager.ViewModels
 {
@@ -62,6 +62,15 @@ namespace CustomerManager.ViewModels
 
         private readonly CustomerService _customerService;
 
+        private CustomerInfo _customerInfo;
+
+        private bool _isAdd = true;
+        public bool IsAdd
+        {
+            get => _isAdd;
+            set => SetProperty(ref _isAdd, value);
+        }
+
         public InputCustomerViewModel(CustomerService customerService)
         {
             _customerService = customerService;
@@ -74,14 +83,28 @@ namespace CustomerManager.ViewModels
         {
             try
             {
-                await _customerService.InsertAsync(new CustomerDto
-                { 
+                var customer = new CustomerDto
+                {
                     Code = Code,
                     Name = Name,
                     NameKana = NameKana,
-                    Prefecture = Prefecture 
-                });
+                    Prefecture = Prefecture
+                };
+
+                if (IsAdd)
+                {
+                    await _customerService.InsertAsync(customer);                    
+                }
+                else
+                {
+                    await _customerService.UpdateAsync(customer);
+                }
+
                 RequestClose?.Invoke(new DialogResult(ButtonResult.OK));
+            }
+            catch (HttpRequestException e) when (e.StatusCode == HttpStatusCode.NotFound)
+            {
+                MessageBox.Show("更新対象が存在しません。");
             }
             catch (Exception e)
             {
@@ -106,6 +129,17 @@ namespace CustomerManager.ViewModels
 
         public void OnDialogOpened(IDialogParameters parameters)
         {
+            if(parameters.TryGetValue("customerInfo", out CustomerInfo customerInfo))
+            {
+                _customerInfo = customerInfo;
+
+                Code = customerInfo.Code;
+                Name = customerInfo.Name;
+                NameKana = customerInfo.NameKana;
+                Prefecture = customerInfo.Prefecture;
+
+                IsAdd = false;
+            }
         }
     }
 }

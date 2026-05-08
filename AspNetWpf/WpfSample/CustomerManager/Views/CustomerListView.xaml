@@ -20,6 +20,12 @@
                         <TextBlock Text="追加"/>
                     </StackPanel>
                 </Button>
+                <Button Command="{Binding UpdateCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Edit"/>
+                        <TextBlock Text="編集"/>
+                    </StackPanel>
+                </Button>
             </ToolBar>
             <ToolBar Band="1">
                 <DockPanel>
@@ -30,7 +36,7 @@
             </ToolBar>
         </ToolBarTray>
 
-        <DataGrid ItemsSource="{Binding CustomerInfos}" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="False" IsReadOnly="True">
+        <DataGrid ItemsSource="{Binding CustomerInfos}" AutoGenerateColumns="False" SelectionMode="Single" CanUserAddRows="False" IsReadOnly="True" SelectedItem="{Binding CurrentItem}">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="取引先コード" Binding="{Binding Code}" />
                 <DataGridTextColumn Header="取引先名" Binding="{Binding Name}" />
